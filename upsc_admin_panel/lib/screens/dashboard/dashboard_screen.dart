@@ -8,7 +8,25 @@ import 'components/header.dart';
 import 'components/recent_files.dart';
 import 'components/storage_details.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+
+class _DashboardScreenState extends State<DashboardScreen> {
+bool isReady = false;
+  @override
+  void initState() {
+
+    super.initState();
+    fillValues();
+  }
+
+Future<void> fillValues()async {
+
+
+}
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -26,8 +44,8 @@ class DashboardScreen extends StatelessWidget {
                   flex: 5,
                   child: Column(
                     children: [
-                      MyFiles(),
-                      SizedBox(height: defaultPadding),
+                    //  MyFiles(),
+                     // SizedBox(height: defaultPadding),
                       RecentFiles(),
                       if (Responsive.isMobile(context))
                         SizedBox(height: defaultPadding),
@@ -50,4 +68,6 @@ class DashboardScreen extends StatelessWidget {
       ),
     );
   }
+
+
 }

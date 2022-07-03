@@ -86,7 +86,20 @@ class SignInBloc extends ChangeNotifier {
             {
               //it is admin
               //allow come in
-              // Navigator.push(context, MaterialPageRoute(builder: (c)=>MainScreen()));
+              _email = currentUser!.email!;
+              _password = userPassword;
+              _isSignedIn = true;
+              if(currentUser!.uid.contains("7O1Cyk7KS2M5x3ebC66f4zkcZGM2"))
+                {_isRole = "SuperAdmin";}
+              else {
+                _isRole = "User";
+              }
+              setSignIn().then((value){
+                saveDataToSP().then((value){
+
+                });
+              });
+
               _hasError = false;
               notifyListeners();
             }
@@ -123,6 +136,7 @@ class SignInBloc extends ChangeNotifier {
 
     await sp.setString('email', _email);
     await sp.setString('isRole', _isRole);
+    await sp.setBool('isSigned', _isSignedIn);
     await sp.setString('password', _password);
   }
 
@@ -132,12 +146,14 @@ class SignInBloc extends ChangeNotifier {
     _email = sp.getString('email') ?? "";
     _password = sp.getString('password') ?? "";
     _isRole = sp.getString('isRole') ??"";
+    _isSignedIn = sp.getBool('isSigned') ?? false;
     notifyListeners();
   }
 
   Future setSignIn() async {
     final SharedPreferences sp = await SharedPreferences.getInstance();
     sp.setBool('signed_in', true);
+    await sp.setBool('isSigned', _isSignedIn);
     _isSignedIn = true;
     notifyListeners();
   }
