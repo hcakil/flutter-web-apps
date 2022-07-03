@@ -1,5 +1,6 @@
 import 'package:admin/blocs/sign_in_bloc.dart';
 import 'package:admin/blocs/theme_bloc.dart';
+import 'package:admin/blocs/users_bloc.dart';
 import 'package:admin/constants.dart';
 import 'package:admin/controllers/MenuController.dart';
 import 'package:admin/models/theme_model.dart';
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
              // ChangeNotifierProvider<SearchBloc>(create: (context) => SearchBloc()),
               //   ChangeNotifierProvider<FeaturedBloc>(create: (context) => FeaturedBloc()),
               //   ChangeNotifierProvider<PopularBloc>(create: (context) => PopularBloc()),
-            //  ChangeNotifierProvider<CustomerBloc>(create: (context) => CustomerBloc()),
+              ChangeNotifierProvider<UsersBloc>(create: (context) => UsersBloc()),
             //  ChangeNotifierProvider<SalesOffersBloc>(create: (context) => SalesOffersBloc()),
               //   ChangeNotifierProvider<AdsBloc>(create: (context) => AdsBloc()),
               //   ChangeNotifierProvider<RelatedBloc>(create: (context) => RelatedBloc()),

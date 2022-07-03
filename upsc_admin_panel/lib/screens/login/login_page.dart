@@ -22,6 +22,14 @@ class _LoginPageState extends State<LoginPage> {
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkUserSignedIn();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
@@ -108,6 +116,26 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+  Future<void> checkUserSignedIn() async{
+    final SignInBloc sb = Provider.of<SignInBloc>(context, listen: false);
+    sb.getDataFromSp().then((value)
+    {
+      if(sb.isSignedIn)
+        {
+          sb.signInwithEmailPassword(sb.email, sb.password).then((value) {
+
+            if(sb.hasError)
+            {
+              openSnackbar(_scaffoldKey, sb.errorCode ?? "Something went wrong");
+            }
+            else{
+              nextScreen(context, MainScreen());
+            }
+
+          });
+        }
+    });
+  }
 
   Future<void> allowAdminToLogin() async {
 openSnackbar(_scaffoldKey, "Checking credentials, Please wait..");
@@ -123,51 +151,7 @@ openSnackbar(_scaffoldKey, "Checking credentials, Please wait..");
       }
 
     });
-  /*  User? currentUser;
-    await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email, password: password)
-        .then((fAuth) {
-      currentUser = fAuth.user;
-    }).onError((error, stackTrace) {
-      //Display error message
-      final snackBar = SnackBar(
-        content: Text(
-          "Error occured: " + error.toString(),
-          style: TextStyle(fontSize: 36),
-        ),
-        backgroundColor: Colors.pinkAccent,
-        duration: const Duration(seconds: 5),
-      );
-
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    });
-
-    if (currentUser != null) {
-      //check it is admin or not
-      await FirebaseFirestore.instance
-          .collection("admins")
-          .doc(currentUser!.uid)
-          .get().then((snap) {
-            if(snap.exists)
-              {
-                //it is admin
-                //allow come in
-                Navigator.push(context, MaterialPageRoute(builder: (c)=>MainScreen()));
-              }
-            else {
-              //No record found
-              final snackBar = SnackBar(
-                content: Text(
-                  "No record found ",
-                  style: TextStyle(fontSize: 36),
-                ),
-                backgroundColor: Colors.pinkAccent,
-                duration: const Duration(seconds: 5),
-              );
-
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            }
-      });
-    }*/
   }
+
+
 }
