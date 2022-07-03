@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    Fore more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+  -->
+  <base href="/login/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A Beautifully engineered portfolio website built with flutter.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="nimbus">
+  <link rel="apple-touch-icon" href="icons/logo.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="icons/logo.png"/>
+
+  <title>UPSC Admin</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"></script>
+<script>
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDEPxFN28KqK3QvBr3sA4gxIUyOMXLRc5w",
+    authDomain: "upsc-quiz-55783.firebaseapp.com",
+    projectId: "upsc-quiz-55783",
+    storageBucket: "upsc-quiz-55783.appspot.com",
+    messagingSenderId: "779814397139",
+    appId: "1:779814397139:web:f86da07cc7233196dca026",
+    measurementId: "G-51GFYLNMHF"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+  //const analytics = getAnalytics(app);
+</script>
+<!-- This script installs service_worker.js to provide PWA functionality to
+     application. For more information, see:
+     https://developers.google.com/web/fundamentals/primers/service-workers -->
+<script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('flutter-first-frame', function () {
+        navigator.serviceWorker.register('flutter_service_worker.js');
+      });
+    }
+  </script>
+<script src="main.dart.js" type="application/javascript"></script>
+
+</body>
+</html>
