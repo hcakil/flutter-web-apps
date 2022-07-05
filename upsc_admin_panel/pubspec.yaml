@@ -44,6 +44,8 @@ dependencies:
 
   #Additional Packages
   package_info: ^2.0.2
+  nb_utils: ^4.4.6
+  flutter_vector_icons: ^1.0.0
 
 dev_dependencies:
   flutter_test:

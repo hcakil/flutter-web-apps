@@ -1,3 +1,4 @@
+import 'package:admin/blocs/questions_bloc.dart';
 import 'package:admin/blocs/sign_in_bloc.dart';
 import 'package:admin/blocs/theme_bloc.dart';
 import 'package:admin/blocs/users_bloc.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
             providers: [
 
               ChangeNotifierProvider<SignInBloc>(create: (context) => SignInBloc(),),
-              //   ChangeNotifierProvider<CommentsBloc>(create: (context) => CommentsBloc(),),
+                 ChangeNotifierProvider<QuestionsBloc>(create: (context) => QuestionsBloc(),),
               //   ChangeNotifierProvider<BookmarkBloc>(create: (context) => BookmarkBloc(),),
              // ChangeNotifierProvider<SearchBloc>(create: (context) => SearchBloc()),
               //   ChangeNotifierProvider<FeaturedBloc>(create: (context) => FeaturedBloc()),

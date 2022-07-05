@@ -1,8 +1,10 @@
 import 'package:admin/blocs/sign_in_bloc.dart';
 import 'package:admin/controllers/MenuController.dart';
 import 'package:admin/responsive.dart';
+import 'package:admin/screens/login/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nb_utils/nb_utils.dart' as nb;
 import 'package:provider/provider.dart';
 
 import '../../../constants.dart';
@@ -66,7 +68,19 @@ class ProfileCard extends StatelessWidget {
                   const EdgeInsets.symmetric(horizontal: defaultPadding / 2),
               child: Text(sb.email,style: TextStyle(color: Colors.white),),
             ),
-          Icon(Icons.keyboard_arrow_down),
+          InkWell(
+              onTap: (){
+                //Log out
+                nb.showConfirmDialog(context,"Do you want to logout?").then((value) {
+                  if(value ?? false)
+                    {
+                      sb.afterUserSignOut().then((value) {
+                        LoginPage().launch(context,isNewTask: true);
+                      });
+                    }
+                });
+              },
+              child: Icon(Icons.logout,color: Colors.white,)),
         ],
       ),
     );
