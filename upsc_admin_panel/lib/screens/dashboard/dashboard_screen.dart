@@ -1,4 +1,5 @@
 import 'package:admin/responsive.dart';
+import 'package:admin/screens/dashboard/components/admin_statistics_widget.dart';
 import 'package:admin/screens/dashboard/components/my_fields.dart';
 import 'package:flutter/material.dart';
 
@@ -44,6 +45,7 @@ Future<void> fillValues()async {
                   flex: 5,
                   child: Column(
                     children: [
+                      AdminStatisticsWidget(),
                     //  MyFiles(),
                      // SizedBox(height: defaultPadding),
                       RecentFiles(),

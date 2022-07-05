@@ -65,6 +65,16 @@ class UsersBloc extends ChangeNotifier {
 
      return _data;
   }
+  Query? getAdminList() {
+    CollectionReference ref = FirebaseFirestore.instance.collection('admins');
+    return ref;
+  }
+
+  Stream<List<MyUser>> users() {
+    CollectionReference ref = FirebaseFirestore.instance.collection('admins');
+    /// return ref.orderBy('updatedAt', descending: true).snapshots().map((x) => x.docs.map((y) => UserModel.fromJson(y.data())).toList());
+    return ref.snapshots().map((x) => x.docs.map((y) => MyUser.fromMap(y.data() as Map<String, dynamic>)).toList());
+  }
 
   afterPopSelection(value, mounted) {
     _popSelection = value;

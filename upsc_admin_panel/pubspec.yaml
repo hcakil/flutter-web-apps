@@ -29,9 +29,8 @@ dependencies:
   cupertino_icons: ^1.0.3
 
   google_fonts: ^2.1.0
-  flutter_svg: ^0.22.0
   fl_chart: ^0.36.1
-  provider: ^5.0.0
+  provider: ^6.0.3
   data_table_2: ^2.0.3
 
   #Firebase Part
@@ -42,8 +41,15 @@ dependencies:
   #Store data locally:
   shared_preferences: ^2.0.15
 
+  #Image Actions
+  cached_network_image: ^3.2.0
+  flutter_svg: ^0.22.0
+
   #Additional Packages
   package_info: ^2.0.2
+  nb_utils: ^4.4.6
+  flutter_vector_icons: ^1.0.0
+  paginate_firestore: ^1.0.3+1
 
 dev_dependencies:
   flutter_test:
