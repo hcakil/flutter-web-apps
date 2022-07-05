@@ -28,10 +28,10 @@ class MyUser {
   }
 
   MyUser.fromMap(Map<String, dynamic> map)
-      : UserId = map["UserId"],
-        Email = map["Email"],
+      : UserId = map["id"],
+        Email = map["email"],
       //  Password = map["Password"],
-        NameSurname = map["NameSurname"],
+        NameSurname = map["name"],
         IsRole = map["IsRole"];
 
   @override

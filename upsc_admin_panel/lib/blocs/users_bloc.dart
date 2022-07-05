@@ -65,6 +65,10 @@ class UsersBloc extends ChangeNotifier {
 
      return _data;
   }
+  Query? getAdminList() {
+    CollectionReference ref = FirebaseFirestore.instance.collection('admins');
+    return ref;
+  }
 
   Stream<List<MyUser>> users() {
     CollectionReference ref = FirebaseFirestore.instance.collection('admins');

@@ -16,6 +16,7 @@ class SettingKeys {
 class CategoryKeys {
   static String name = 'name';
   static String image = 'image';
+  static String mainCategory = 'mainCategory';
 }
 
 class SubscriptionKeys {
