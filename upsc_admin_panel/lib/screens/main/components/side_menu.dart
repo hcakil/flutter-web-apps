@@ -2,6 +2,7 @@ import 'package:admin/constants.dart';
 import 'package:admin/models/list_model.dart';
 import 'package:admin/screens/dashboard/dashboard_screen.dart';
 import 'package:admin/screens/main_category/main_category_list.dart';
+import 'package:admin/screens/main_category/sub_category_list.dart';
 import 'package:admin/screens/user_list/user_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -33,7 +34,7 @@ class _SideMenuState extends State<SideMenu> {
     list.add(ListModel(name: 'Dashboard', widget: DashboardScreen(), imageAsset: 'assets/icons/menu_dashbord.svg'));
     list.add(ListModel(name: 'User List', widget: UserListScreen(), imageAsset: 'assets/icons/menu_tran.svg'));
     list.add(ListModel(name: 'Main Categories', widget: CategoryListScreen(), imageAsset: 'assets/icons/menu_task.svg'));
-    list.add(ListModel(name: 'Sub Categories', widget: CategoryListScreen(), imageAsset: 'assets/icons/menu_task.svg'));
+    list.add(ListModel(name: 'Sub Categories', widget: SubCategoryListScreen(), imageAsset: 'assets/icons/menu_task.svg'));
     list.add(ListModel(name: 'Store', widget: DashboardScreen(), imageAsset: 'assets/icons/menu_doc.svg'));
     list.add(ListModel(name: 'Notification', widget: DashboardScreen(), imageAsset: 'assets/icons/menu_store.svg'));
     list.add(ListModel(name: 'Admins', widget: DashboardScreen(), imageAsset: 'assets/icons/menu_profile.svg'));

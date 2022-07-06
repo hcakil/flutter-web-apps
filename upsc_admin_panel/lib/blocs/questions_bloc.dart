@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:admin/models/main_category.dart';
 import 'package:admin/models/my_user.dart';
 import 'package:admin/models/question_model.dart';
+import 'package:admin/models/sub_category.dart';
 import 'package:admin/utils/model_keys.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -80,6 +81,19 @@ class QuestionsBloc extends ChangeNotifier {
       throw e;
     });
   }
+  Future<DocumentReference> addSubCategoryDocument(Map data) async {
+    CollectionReference ref = FirebaseFirestore.instance.collection('subCategories');
+    return await ref.add(data).then((value) {
+      value.update({CommonKeys.id: value.id});
+
+      log('Added: $data');
+
+      return value;
+    }).catchError((e) {
+      log(e);
+      throw e;
+    });
+  }
 
   Future<void> removeCategoryDocument(String? id) async {
     CollectionReference ref = FirebaseFirestore.instance.collection('mainCategories');
@@ -95,6 +109,16 @@ class QuestionsBloc extends ChangeNotifier {
   Stream<List<MainCategoryModel>> mainCategories() {
     CollectionReference ref = FirebaseFirestore.instance.collection('mainCategories');
     return ref.snapshots().map((x) => x.docs.map((y) => MainCategoryModel.fromJson(y.data() as Map<String, dynamic>)).toList());
+  }
+
+  Stream<List<SubCategoryModel>> subCategories() {
+    CollectionReference ref = FirebaseFirestore.instance.collection('subCategories');
+    return ref.snapshots().map((x) => x.docs.map((y) => SubCategoryModel.fromJson(y.data() as Map<String, dynamic>)).toList());
+  }
+
+  Future<List<MainCategoryModel>> mainCategoriesFuture({String parentCategoryId = ''}) async {
+    CollectionReference ref = FirebaseFirestore.instance.collection('mainCategories');
+    return await ref.get().then((x) => x.docs.map((y) => MainCategoryModel.fromJson(y.data() as Map<String, dynamic>)).toList());
   }
 
   afterPopSelection(value, mounted) {

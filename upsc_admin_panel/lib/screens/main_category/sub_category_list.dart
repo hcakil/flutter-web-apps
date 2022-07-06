@@ -1,8 +1,11 @@
 import 'package:admin/blocs/questions_bloc.dart';
 import 'package:admin/constants.dart';
 import 'package:admin/models/main_category.dart';
+import 'package:admin/models/sub_category.dart';
 import 'package:admin/screens/main_category/components/category_item_widget.dart';
 import 'package:admin/screens/main_category/components/new_main_category_dialog.dart';
+import 'package:admin/screens/main_category/components/new_sub_category_dialog.dart';
+import 'package:admin/screens/main_category/components/sub_category_item_widget.dart';
 import 'package:admin/utils/app_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -49,16 +52,16 @@ class _SubCategoryListScreenState extends State<SubCategoryListScreen> {
               AppButton(
                 padding: EdgeInsets.all(16),
                 child: Text('Add Sub Category', style: primaryTextStyle(color: white)),
-                color: primaryColor,
+                color: secondaryColor,
                 onTap: () {
-                  showInDialog(context, child: NewCategoryDialog());
+                  showInDialog(context, child: NewSubCategoryDialog());
                 },
               )
             ],
           ).paddingOnly(left: 16),
           8.height,
-          StreamBuilder<List<MainCategoryModel>>(
-            stream: qb.mainCategories(),
+          StreamBuilder<List<SubCategoryModel>>(
+            stream: qb.subCategories(),
             builder: (_, snap) {
               if (snap.hasData) {
                 if (snap.data!.isEmpty) return noDataWidget();
@@ -68,7 +71,7 @@ class _SubCategoryListScreenState extends State<SubCategoryListScreen> {
                   spacing: 16,
                   runSpacing: 8,
                   children: snap.data.validate().map((e) {
-                    return CategoryItemWidget(data: e);
+                    return SubCategoryItemWidget(data: e);
                   }).toList(),
                 );
               } else {
