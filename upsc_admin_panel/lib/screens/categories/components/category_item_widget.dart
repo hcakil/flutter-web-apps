@@ -1,5 +1,5 @@
 import 'package:admin/models/main_category.dart';
-import 'package:admin/screens/main_category/components/new_main_category_dialog.dart';
+import 'package:admin/screens/categories/components/new_main_category_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
 

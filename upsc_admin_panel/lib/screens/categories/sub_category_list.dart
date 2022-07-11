@@ -1,11 +1,8 @@
 import 'package:admin/blocs/questions_bloc.dart';
 import 'package:admin/constants.dart';
-import 'package:admin/models/main_category.dart';
 import 'package:admin/models/sub_category.dart';
-import 'package:admin/screens/main_category/components/category_item_widget.dart';
-import 'package:admin/screens/main_category/components/new_main_category_dialog.dart';
-import 'package:admin/screens/main_category/components/new_sub_category_dialog.dart';
-import 'package:admin/screens/main_category/components/sub_category_item_widget.dart';
+import 'package:admin/screens/categories/components/new_sub_category_dialog.dart';
+import 'package:admin/screens/categories/components/sub_category_item_widget.dart';
 import 'package:admin/utils/app_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
