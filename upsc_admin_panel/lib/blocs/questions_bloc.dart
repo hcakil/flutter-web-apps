@@ -66,6 +66,22 @@ class QuestionsBloc extends ChangeNotifier {
     CollectionReference ref = FirebaseFirestore.instance.collection('questions');
     return ref.snapshots().map((x) => x.docs.map((y) => QuestionModel.fromJson(y.data() as Map<String, dynamic>)).toList());
   }
+
+  Stream<List<QuestionModel>> listQuestionByUser(MyUser? user,DateTime? first, DateTime? last) {
+    CollectionReference ref = FirebaseFirestore.instance.collection('questions');
+
+    return ref.where("addedBy",isEqualTo: user!.Email).where("createdAt",isGreaterThan:first).where("createdAt",isLessThan:last).snapshots().map((x) => x.docs.map((y) => QuestionModel.fromJson(y.data() as Map<String, dynamic>)).toList());
+  }
+
+  Future<List<QuestionModel>>? listQuestionByUserFuture(MyUser? user,DateTime? first, DateTime? last) async {
+    CollectionReference ref = FirebaseFirestore.instance.collection('questions');
+    List<QuestionModel> list =[];
+    list = await ref.where("addedBy",isEqualTo: user!.Email).where("createdAt",isGreaterThan:first).where("createdAt",isLessThan:last).get().then((x) => x.docs.map((y) => QuestionModel.fromJson(y.data() as Map<String, dynamic>)).toList());
+
+    return list;
+
+   // return ref.where("addedBy",isEqualTo: user!.Email).where("createdAt",isGreaterThan:first).where("createdAt",isLessThan:last).snapshots().map((x) => x.docs.map((y) => QuestionModel.fromJson(y.data() as Map<String, dynamic>)).toList());
+  }
   Future<void> updateCategoryDocument(Map<String, dynamic> data, String? id) async {
     CollectionReference ref = FirebaseFirestore.instance.collection('mainCategories');
     await ref.doc(id).update(data).then((value) {

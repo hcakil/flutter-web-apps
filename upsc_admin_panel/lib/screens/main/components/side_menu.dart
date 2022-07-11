@@ -6,6 +6,7 @@ import 'package:admin/screens/dashboard/dashboard_screen.dart';
 import 'package:admin/screens/questions/add_new_question.dart';
 import 'package:admin/screens/questions/all_questions.dart';
 import 'package:admin/screens/user_list/user_list_screen.dart';
+import 'package:admin/screens/user_questions/user_questions_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -39,7 +40,7 @@ class _SideMenuState extends State<SideMenu> {
     list.add(ListModel(name: 'Sub Categories', widget: SubCategoryListScreen(), imageAsset: 'assets/icons/menu_tran.svg'));
     list.add(ListModel(name: 'Add Question', widget: AddNewQuestionsScreen(), imageAsset: 'assets/icons/menu_doc.svg'));
     list.add(ListModel(name: 'Questions', widget: AllQuestionsListWidget(), imageAsset: 'assets/icons/menu_store.svg'));
-    list.add(ListModel(name: 'Admins', widget: DashboardScreen(), imageAsset: 'assets/icons/menu_profile.svg'));
+    list.add(ListModel(name: 'Admins Actions', widget: UserQuestionsListScreen(), imageAsset: 'assets/icons/menu_profile.svg'));
     LiveStream().on('selectItem', (index) {
       this.index = index as int;
 
