@@ -1,6 +1,7 @@
 
 
 import 'package:admin/utils/model_keys.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class QuestionModel {
   String? question;
@@ -22,9 +23,11 @@ class QuestionModel {
   String? addedBy;
   String? category;
   String? descriptionImage;
+  DateTime? updatedAt;
+  DateTime? createdAt;
  // int? selectedOptionIndex;
  // List<String>? optionList;
-  String? selectedAnswer;
+ // String? selectedAnswer;
 
 
   QuestionModel({
@@ -47,7 +50,10 @@ class QuestionModel {
       this.description,
       this.addedBy,
       this.descriptionImage,
-      this.selectedAnswer});
+      this.updatedAt,
+      this.createdAt,
+  //    this.selectedAnswer
+  });
 
   factory QuestionModel.fromJson(Map<String, dynamic> json) {
     return QuestionModel(
@@ -69,8 +75,10 @@ class QuestionModel {
       description: json[QuestionKeys.description],
       addedBy: json[QuestionKeys.addedBy],
       descriptionImage: json[QuestionKeys.descriptionImage],
-      selectedAnswer: json[QuestionKeys.selectedAnswer],
+     // selectedAnswer: json[QuestionKeys.selectedAnswer],
       category: json[QuestionKeys.category],
+      updatedAt: json[CommonKeys.updatedAt] != null ? (json[CommonKeys.updatedAt] as Timestamp).toDate() : null,
+      createdAt: json[CommonKeys.createdAt] != null ? (json[CommonKeys.createdAt] as Timestamp).toDate() : null,
 
      // optionList: json[QuestionKeys.optionList] != null ? new List<String>.from(json[QuestionKeys.optionList]) : null,
     );
@@ -80,24 +88,26 @@ class QuestionModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data[QuestionKeys.question] = this.question;
     data[QuestionKeys.id] = this.id;
-    data[QuestionKeys.questionImage] = this.questionImage;
+    data[QuestionKeys.questionImage] = this.questionImage ??"";
     data[QuestionKeys.answer] = this.answer;
     data[QuestionKeys.category] = this.category;
-    data[QuestionKeys.selectedAnswer] = this.selectedAnswer;
-    data[QuestionKeys.descriptionImage] = this.descriptionImage;
+   // data[QuestionKeys.selectedAnswer] = this.selectedAnswer;
+    data[QuestionKeys.descriptionImage] = this.descriptionImage ?? "";
     data[QuestionKeys.addedBy] = this.addedBy;
     data[QuestionKeys.description] = this.description;
     data[QuestionKeys.option1] = this.option1;
     data[QuestionKeys.option2] = this.option2;
     data[QuestionKeys.option3] = this.option3;
     data[QuestionKeys.option4] = this.option4;
-    data[QuestionKeys.optionImage1] = this.optionImage1;
-    data[QuestionKeys.optionImage2] = this.optionImage2;
-    data[QuestionKeys.optionImage3] = this.optionImage3;
-    data[QuestionKeys.optionImage4] = this.optionImage4;
-    data[QuestionKeys.userName] = this.userName;
+    data[QuestionKeys.optionImage1] = this.optionImage1 ?? "";
+    data[QuestionKeys.optionImage2] = this.optionImage2 ?? "";
+    data[QuestionKeys.optionImage3] = this.optionImage3 ?? "";
+    data[QuestionKeys.optionImage4] = this.optionImage4 ?? "";
+    data[QuestionKeys.userName] = this.userName ?? "";
     data[QuestionKeys.topic] = this.topic;
     data[QuestionKeys.source] = this.source;
+    data[CommonKeys.createdAt] = this.createdAt;
+    data[CommonKeys.updatedAt] = this.updatedAt;
 
 
 

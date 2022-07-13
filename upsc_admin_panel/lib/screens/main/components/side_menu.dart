@@ -1,8 +1,12 @@
 import 'package:admin/constants.dart';
 import 'package:admin/models/list_model.dart';
+import 'package:admin/screens/categories/main_category_list.dart';
+import 'package:admin/screens/categories/sub_category_list.dart';
 import 'package:admin/screens/dashboard/dashboard_screen.dart';
-import 'package:admin/screens/main_category/main_category_list.dart';
+import 'package:admin/screens/questions/add_new_question.dart';
+import 'package:admin/screens/questions/all_questions.dart';
 import 'package:admin/screens/user_list/user_list_screen.dart';
+import 'package:admin/screens/user_questions/user_questions_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -31,12 +35,12 @@ class _SideMenuState extends State<SideMenu> {
 
   Future<void> init() async {
     list.add(ListModel(name: 'Dashboard', widget: DashboardScreen(), imageAsset: 'assets/icons/menu_dashbord.svg'));
-    list.add(ListModel(name: 'User List', widget: UserListScreen(), imageAsset: 'assets/icons/menu_tran.svg'));
+    list.add(ListModel(name: 'Admins List', widget: UserListScreen(), imageAsset: 'assets/icons/menu_profile.svg'));
     list.add(ListModel(name: 'Main Categories', widget: CategoryListScreen(), imageAsset: 'assets/icons/menu_task.svg'));
-    list.add(ListModel(name: 'Sub Categories', widget: CategoryListScreen(), imageAsset: 'assets/icons/menu_task.svg'));
-    list.add(ListModel(name: 'Store', widget: DashboardScreen(), imageAsset: 'assets/icons/menu_doc.svg'));
-    list.add(ListModel(name: 'Notification', widget: DashboardScreen(), imageAsset: 'assets/icons/menu_store.svg'));
-    list.add(ListModel(name: 'Admins', widget: DashboardScreen(), imageAsset: 'assets/icons/menu_profile.svg'));
+    list.add(ListModel(name: 'Sub Categories', widget: SubCategoryListScreen(), imageAsset: 'assets/icons/menu_tran.svg'));
+    list.add(ListModel(name: 'Add Question', widget: AddNewQuestionsScreen(), imageAsset: 'assets/icons/menu_doc.svg'));
+    list.add(ListModel(name: 'Questions', widget: AllQuestionsListWidget(), imageAsset: 'assets/icons/menu_store.svg'));
+    list.add(ListModel(name: 'Admins Actions', widget: UserQuestionsListScreen(), imageAsset: 'assets/icons/menu_profile.svg'));
     LiveStream().on('selectItem', (index) {
       this.index = index as int;
 
@@ -104,7 +108,7 @@ class _SideMenuState extends State<SideMenu> {
       child: ListView(
         children: [
           DrawerHeader(
-            child: Image.asset("assets/images/logo.png"),
+            child: Image.asset("assets/images/logo1.png"),
           ),
           DrawerListTile(
             title: "Dashboard",

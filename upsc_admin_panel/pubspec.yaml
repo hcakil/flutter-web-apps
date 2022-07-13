@@ -37,19 +37,28 @@ dependencies:
   firebase_core: ^1.19.1
   firebase_auth: ^3.4.1
   cloud_firestore: ^3.2.1
+  firebase_storage: ^10.3.1
+  #firebase_storage_web: ^2.0.0
 
   #Store data locally:
   shared_preferences: ^2.0.15
 
+
   #Image Actions
   cached_network_image: ^3.2.0
   flutter_svg: ^0.22.0
+  image_picker: ^0.7.5+3
+  file_picker: ^4.6.1
 
   #Additional Packages
   package_info: ^2.0.2
   nb_utils: ^4.4.6
   flutter_vector_icons: ^1.0.0
   paginate_firestore: ^1.0.3+1
+  uuid: ^3.0.6
+
+  #Date
+  intl: any
 
 dev_dependencies:
   flutter_test:
