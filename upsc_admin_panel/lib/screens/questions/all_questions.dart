@@ -278,7 +278,7 @@ class AllQuestionsListWidgetState extends State<AllQuestionsListWidget> {
                   16.height,
                   Row(
                     children: [
-                      Text('Question Id :', style: boldTextStyle(size: 18)),
+                      SelectableText('Question Id : ' +data.id!, style: boldTextStyle(size: 18)),
                       8.width,
                       Container(
                         alignment: Alignment.center,
@@ -287,7 +287,7 @@ class AllQuestionsListWidgetState extends State<AllQuestionsListWidget> {
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: gray.withOpacity(0.4), width: 0.1),
                         ),
-                        child: Text(data.id!, style: boldTextStyle()),
+                        child: Text("", style: boldTextStyle()),
                       ),
                     ],
                   ),
