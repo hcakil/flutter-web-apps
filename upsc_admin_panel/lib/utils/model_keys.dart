@@ -53,6 +53,7 @@ class QuestionKeys {
   static String descriptionImage = 'descriptionImage';
   static String selectedAnswer = 'selectedAnswer';
   static String category = 'category';
+  static String isChecked = 'isChecked';
 }
 
 class QuizHistoryKeys {

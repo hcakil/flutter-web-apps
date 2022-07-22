@@ -25,6 +25,7 @@ class QuestionModel {
   String? descriptionImage;
   DateTime? updatedAt;
   DateTime? createdAt;
+  bool? isChecked = false;
  // int? selectedOptionIndex;
  // List<String>? optionList;
  // String? selectedAnswer;
@@ -52,6 +53,7 @@ class QuestionModel {
       this.descriptionImage,
       this.updatedAt,
       this.createdAt,
+      this.isChecked,
   //    this.selectedAnswer
   });
 
@@ -78,6 +80,7 @@ class QuestionModel {
      // selectedAnswer: json[QuestionKeys.selectedAnswer],
       category: json[QuestionKeys.category],
       updatedAt: json[CommonKeys.updatedAt] != null ? (json[CommonKeys.updatedAt] as Timestamp).toDate() : null,
+      isChecked: json[QuestionKeys.isChecked] ?? false,
       createdAt: json[CommonKeys.createdAt] != null ? (json[CommonKeys.createdAt] as Timestamp).toDate() : null,
 
      // optionList: json[QuestionKeys.optionList] != null ? new List<String>.from(json[QuestionKeys.optionList]) : null,
@@ -90,6 +93,7 @@ class QuestionModel {
     data[QuestionKeys.id] = this.id;
     data[QuestionKeys.questionImage] = this.questionImage ??"";
     data[QuestionKeys.answer] = this.answer;
+    data[QuestionKeys.isChecked] = this.isChecked;
     data[QuestionKeys.category] = this.category;
    // data[QuestionKeys.selectedAnswer] = this.selectedAnswer;
     data[QuestionKeys.descriptionImage] = this.descriptionImage ?? "";

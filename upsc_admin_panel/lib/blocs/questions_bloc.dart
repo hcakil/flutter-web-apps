@@ -66,6 +66,18 @@ class QuestionsBloc extends ChangeNotifier {
     CollectionReference ref = FirebaseFirestore.instance.collection('questions');
     return ref.snapshots().map((x) => x.docs.map((y) => QuestionModel.fromJson(y.data() as Map<String, dynamic>)).toList());
   }
+  Future<List<QuestionModel>> questionListByCategoryFuture({String? categoryRef}) async {
+    Query? query;
+    CollectionReference ref = FirebaseFirestore.instance.collection('questions');
+    if (categoryRef != null) {
+      query = ref.where('category', isEqualTo: categoryRef);
+    } else {
+      query = ref;
+    }
+
+
+    return await query.get().then((x) => x.docs.map((y) => QuestionModel.fromJson(y.data() as Map<String, dynamic>)).toList());
+  }
 
   Stream<List<QuestionModel>> listQuestionByUser(MyUser? user,DateTime? first, DateTime? last) {
     CollectionReference ref = FirebaseFirestore.instance.collection('questions');
@@ -175,24 +187,21 @@ class QuestionsBloc extends ChangeNotifier {
       image = await uploadTask.snapshot.ref.getDownloadURL();
      // print(image);
     });
-
     return image;
+  }
 
-  /*  return await uploadTask.then((v) async {
-      log('File Uploaded');
-
-      if (v.state == TaskState.success) {
-        String url = await ref.getDownloadURL();
-
-        log(url);
-
-        return url;
+  Future<MainCategoryModel> getCategoryById(String? id) async {
+    CollectionReference ref = FirebaseFirestore.instance.collection('mainCategories');
+    return await ref.where('name', isEqualTo: id).get().then((x) {
+      if (x.docs.isNotEmpty) {
+        log(x.docs.first.id);
+        return MainCategoryModel.fromJson(x.docs.first.data() as Map<String, dynamic>);
       } else {
-        throw errorSomethingWentWrong;
+        throw '';
       }
-    }).catchError((error) {
-      throw error;
-    });*/
+    }).catchError((e) {
+      throw e;
+    });
   }
 
   Future<List<MainCategoryModel>> mainCategoriesFuture({String parentCategoryId = ''}) async {
