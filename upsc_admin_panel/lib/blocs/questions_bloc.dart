@@ -8,6 +8,7 @@ import 'package:admin/constants.dart';
 import 'package:admin/models/main_category.dart';
 import 'package:admin/models/my_user.dart';
 import 'package:admin/models/question_model.dart';
+import 'package:admin/models/quiz_model.dart';
 import 'package:admin/models/sub_category.dart';
 import 'package:admin/utils/model_keys.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -58,13 +59,31 @@ class QuestionsBloc extends ChangeNotifier {
     notifyListeners();
   }
 
- /* Stream<List<CategoryData>> categories() {
-   CollectionReference ref = FirebaseFirestore.instance.collection('categories');
-    return ref!.snapshots().map((x) => x.docs.map((y) => CategoryData.fromJson(y.data() as Map<String, dynamic>)).toList());
-  }*/
+  Future<QuestionModel> questionById(String? id) async {
+    CollectionReference ref = FirebaseFirestore.instance.collection('questions');
+    return await ref.where('id', isEqualTo: id).limit(1).get().then((x) {
+      if (x.docs.isNotEmpty) {
+        return QuestionModel.fromJson(x.docs.first.data() as Map<String, dynamic>);
+      } else {
+        throw 'Not available';
+      }
+    });
+  }
   Stream<List<QuestionModel>> listQuestion() {
     CollectionReference ref = FirebaseFirestore.instance.collection('questions');
     return ref.snapshots().map((x) => x.docs.map((y) => QuestionModel.fromJson(y.data() as Map<String, dynamic>)).toList());
+  }
+  Future<List<QuestionModel>> questionListByCategoryFuture({String? categoryRef}) async {
+    Query? query;
+    CollectionReference ref = FirebaseFirestore.instance.collection('questions');
+    if (categoryRef != null) {
+      query = ref.where('category', isEqualTo: categoryRef);
+    } else {
+      query = ref;
+    }
+
+
+    return await query.get().then((x) => x.docs.map((y) => QuestionModel.fromJson(y.data() as Map<String, dynamic>)).toList());
   }
 
   Stream<List<QuestionModel>> listQuestionByUser(MyUser? user,DateTime? first, DateTime? last) {
@@ -175,29 +194,31 @@ class QuestionsBloc extends ChangeNotifier {
       image = await uploadTask.snapshot.ref.getDownloadURL();
      // print(image);
     });
-
     return image;
+  }
 
-  /*  return await uploadTask.then((v) async {
-      log('File Uploaded');
-
-      if (v.state == TaskState.success) {
-        String url = await ref.getDownloadURL();
-
-        log(url);
-
-        return url;
+  Future<MainCategoryModel> getCategoryById(String? id) async {
+    CollectionReference ref = FirebaseFirestore.instance.collection('mainCategories');
+    return await ref.where('name', isEqualTo: id).get().then((x) {
+      if (x.docs.isNotEmpty) {
+        log(x.docs.first.id);
+        return MainCategoryModel.fromJson(x.docs.first.data() as Map<String, dynamic>);
       } else {
-        throw errorSomethingWentWrong;
+        throw '';
       }
-    }).catchError((error) {
-      throw error;
-    });*/
+    }).catchError((e) {
+      throw e;
+    });
   }
 
   Future<List<MainCategoryModel>> mainCategoriesFuture({String parentCategoryId = ''}) async {
     CollectionReference ref = FirebaseFirestore.instance.collection('mainCategories');
     return await ref.get().then((x) => x.docs.map((y) => MainCategoryModel.fromJson(y.data() as Map<String, dynamic>)).toList());
+  }
+
+  Future<List<QuizModel>> get quizListCategory async {
+    CollectionReference ref = FirebaseFirestore.instance.collection('categoryQuiz');
+    return await ref.get().then((value) => value.docs.map((e) => QuizModel.fromJson(e.data() as Map<String, dynamic>)).toList());
   }
 
   //FOR BASIC CRUD OPS

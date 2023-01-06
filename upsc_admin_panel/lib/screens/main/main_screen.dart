@@ -50,7 +50,7 @@ class _MainScreenState extends State<MainScreen> {
           child: Row(
             children: [
               Container(
-                width: context.width() * 0.15,
+                width: context.width() * 0.17,
                 //   color: Colors.white,
                 padding: EdgeInsets.only(left: 16),
                 height: context.height(),
@@ -67,7 +67,7 @@ class _MainScreenState extends State<MainScreen> {
                 margin: EdgeInsets.only(top: 16, bottom: 16),
                 padding: EdgeInsets.all(16),
                 decoration: boxDecorationWithRoundedCorners(borderRadius: BorderRadius.circular(16), backgroundColor: selectedDrawerViewColor),
-                width: context.width() * 0.84,
+                width: context.width() * 0.82,
                 height: context.height(),
                 child: currentWidget,
               ),
