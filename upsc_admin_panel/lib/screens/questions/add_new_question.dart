@@ -55,6 +55,7 @@ class AddQuestionsScreenState extends State<AddNewQuestionsScreen> {
   String source = 'Source';
   String description = 'Description';
   String descriptionImg = '';
+  bool? isOnlySuperAdmin;
 
   PickedFile? image;
 
@@ -113,18 +114,22 @@ class AddQuestionsScreenState extends State<AddNewQuestionsScreen> {
         questionTypeGroupValue = 4;
       }*/
 
-      if (widget.data!.option1!.length > 0) option1Cont.text = widget.data!.option1.validate();
-      if (widget.data!.option2!.length > 0) option2Cont.text = widget.data!.option2.validate();
-      if (widget.data!.option3!.length > 0) option3Cont.text = widget.data!.option3.validate();
-      if (widget.data!.option4!.length > 0) option4Cont.text = widget.data!.option4.validate();
-     /* if (widget.data!.optionList!.length > 1) option2Cont.text = widget.data!.optionList![1].validate();
+      if (widget.data!.option1!.length > 0)
+        option1Cont.text = widget.data!.option1.validate();
+      if (widget.data!.option2!.length > 0)
+        option2Cont.text = widget.data!.option2.validate();
+      if (widget.data!.option3!.length > 0)
+        option3Cont.text = widget.data!.option3.validate();
+      if (widget.data!.option4!.length > 0)
+        option4Cont.text = widget.data!.option4.validate();
+      /* if (widget.data!.optionList!.length > 1) option2Cont.text = widget.data!.optionList![1].validate();
       if (widget.data!.optionList!.length > 2) option3Cont.text = widget.data!.optionList![2].validate();
       if (widget.data!.optionList!.length > 3) option4Cont.text = widget.data!.optionList![3].validate();
       if (widget.data!.optionList!.length > 4) option5Cont.text = widget.data!.optionList![4].validate();*/
 
       sourceCont.text = widget.data!.source.validate();
       descriptionCont.text = widget.data!.description.validate();
-     // correctAnswer = widget.data!.answer.validate();
+      // correctAnswer = widget.data!.answer.validate();
 
       questionImgCont.text = widget.data!.questionImage.validate();
       descriptionImgCont.text = widget.data!.descriptionImage.validate();
@@ -134,23 +139,32 @@ class AddQuestionsScreenState extends State<AddNewQuestionsScreen> {
       option3ImgCont.text = widget.data!.optionImage3.validate();
       option4ImgCont.text = widget.data!.optionImage4.validate();
 
-      if (widget.data!.option1!.length > 0) option1 = widget.data!.option1.validate();
-      if (widget.data!.option2!.length > 0) option2 = widget.data!.option2.validate();
-      if (widget.data!.option3!.length > 0) option3 = widget.data!.option3.validate();
-      if (widget.data!.option4!.length > 0) option4 = widget.data!.option4.validate();
+      if (widget.data!.option1!.length > 0)
+        option1 = widget.data!.option1.validate();
+      if (widget.data!.option2!.length > 0)
+        option2 = widget.data!.option2.validate();
+      if (widget.data!.option3!.length > 0)
+        option3 = widget.data!.option3.validate();
+      if (widget.data!.option4!.length > 0)
+        option4 = widget.data!.option4.validate();
       //if (widget.data!.optionList!.length > 4) option5 = widget.data!.optionList![4].validate();
     }
-    else{
-          option1ImgCont.text = option1Img;
-          option2ImgCont.text = option2Img;
-          option3ImgCont.text = option3Img;
-          option4ImgCont.text = option4Img;
-          questionImgCont.text = "";
-          descriptionImgCont.text = descriptionImg;
+    else {
+      option1ImgCont.text = option1Img;
+      option2ImgCont.text = option2Img;
+      option3ImgCont.text = option3Img;
+      option4ImgCont.text = option4Img;
+      questionImgCont.text = "";
+      descriptionImgCont.text = descriptionImg;
     }
     final SignInBloc sb = Provider.of<SignInBloc>(context, listen: false);
     addedBy = sb.email;
 
+    sb.getDataFromSp().then((value) {
+      if (sb.email.contains("adminuser@email.com") && sb.email.length == 19) {
+        isOnlySuperAdmin = true;
+      }
+    });
 
 
     /// Load main categories
@@ -160,7 +174,8 @@ class AddQuestionsScreenState extends State<AddNewQuestionsScreen> {
     if (categories.isNotEmpty) {
       if (isUpdate) {
         try {
-          selectedCategory = categories.firstWhere((element) => element.name == widget.data!.category);
+          selectedCategory = categories.firstWhere((element) => element.name ==
+              widget.data!.category);
         } catch (e) {
           print(e);
         }
@@ -170,12 +185,15 @@ class AddQuestionsScreenState extends State<AddNewQuestionsScreen> {
 
       /// Load sub categories
 
-      subcategories = await qb.subCategoriesById(parentCategoryId: selectedCategory!.name!);
+      subcategories =
+      await qb.subCategoriesById(parentCategoryId: selectedCategory!.name!);
 
       if (subcategories.isNotEmpty) {
         if (isUpdate) {
           try {
-            selectedSubCategory = subcategories.firstWhere((element) => element.name == widget.data!.topic);
+            selectedSubCategory =
+                subcategories.firstWhere((element) => element.name ==
+                    widget.data!.topic);
           } catch (e) {
             print(e);
           }
@@ -183,16 +201,14 @@ class AddQuestionsScreenState extends State<AddNewQuestionsScreen> {
           selectedSubCategory = subcategories.first;
         }
       }
-
     }
 
 
-
-setState(() {});
+    setState(() {});
   }
 
   Future<void> save() async {
-   // if (getBoolAsync(IS_TEST_USER)) return toast(mTestUserMsg);
+    // if (getBoolAsync(IS_TEST_USER)) return toast(mTestUserMsg);
 
     if (correctAnswer == null) {
       return toast('Please Select Correct Answer');
@@ -210,18 +226,34 @@ setState(() {});
       options.clear();
       optionsImages.clear();
 
-    //  if (questionType == QuestionTypeOption) {
-        if (option1Cont.text.trim().isNotEmpty) options.add(option1Cont.text.trim());
-        if (option2Cont.text.trim().isNotEmpty) options.add(option2Cont.text.trim());
-        if (option3Cont.text.trim().isNotEmpty) options.add(option3Cont.text.trim());
-        if (option4Cont.text.trim().isNotEmpty) options.add(option4Cont.text.trim());
+      //  if (questionType == QuestionTypeOption) {
+      if (option1Cont.text
+          .trim()
+          .isNotEmpty) options.add(option1Cont.text.trim());
+      if (option2Cont.text
+          .trim()
+          .isNotEmpty) options.add(option2Cont.text.trim());
+      if (option3Cont.text
+          .trim()
+          .isNotEmpty) options.add(option3Cont.text.trim());
+      if (option4Cont.text
+          .trim()
+          .isNotEmpty) options.add(option4Cont.text.trim());
 
-      if (option1ImgCont.text.trim().isNotEmpty) optionsImages.add(option1ImgCont.text.trim());
-      if (option2ImgCont.text.trim().isNotEmpty) optionsImages.add(option2ImgCont.text.trim());
-      if (option3ImgCont.text.trim().isNotEmpty) optionsImages.add(option3ImgCont.text.trim());
-      if (option4ImgCont.text.trim().isNotEmpty) optionsImages.add(option4ImgCont.text.trim());
-    //    if (option5Cont.text.trim().isNotEmpty) options.add(option5Cont.text.trim());
-  /*    } else {
+      if (option1ImgCont.text
+          .trim()
+          .isNotEmpty) optionsImages.add(option1ImgCont.text.trim());
+      if (option2ImgCont.text
+          .trim()
+          .isNotEmpty) optionsImages.add(option2ImgCont.text.trim());
+      if (option3ImgCont.text
+          .trim()
+          .isNotEmpty) optionsImages.add(option3ImgCont.text.trim());
+      if (option4ImgCont.text
+          .trim()
+          .isNotEmpty) optionsImages.add(option4ImgCont.text.trim());
+      //    if (option5Cont.text.trim().isNotEmpty) options.add(option5Cont.text.trim());
+      /*    } else {
         if (option1Cont.text.trim().isNotEmpty) options.add(option1Cont.text.trim());
         if (option2Cont.text.trim().isNotEmpty) options.add(option2Cont.text.trim());
       }*/
@@ -239,26 +271,28 @@ setState(() {});
       questionData.option2 = options[1];
       questionData.option3 = options[2];
       questionData.option4 = options[3];
-      if(optionsImages.isNotEmpty)
-        {
-          questionData.optionImage1 = optionsImages[0];
-          questionData.optionImage2 = optionsImages[1];
-          questionData.optionImage3 = optionsImages[2];
-          questionData.optionImage4 = optionsImages[3];
-        }
+      if (optionsImages.isNotEmpty) {
+        questionData.optionImage1 = optionsImages[0];
+        questionData.optionImage2 = optionsImages[1];
+        questionData.optionImage3 = optionsImages[2];
+        questionData.optionImage4 = optionsImages[3];
+      }
 
       if (selectedCategory != null) {
-        questionData.category = selectedCategory!.name;//categoryService.ref!.doc(selectedCategory!.id);
+        questionData.category = selectedCategory!
+            .name; //categoryService.ref!.doc(selectedCategory!.id);
       }
       if (selectedSubCategory != null) {
         questionData.topic = selectedSubCategory!.name;
       }
-      final QuestionsBloc qb = Provider.of<QuestionsBloc>(context, listen: false);
+      final QuestionsBloc qb = Provider.of<QuestionsBloc>(
+          context, listen: false);
       if (isUpdate) {
         questionData.id = widget.data!.id;
         questionData.createdAt = widget.data!.createdAt;
 
-        await qb.updateDocument(questionData.toJson(), questionData.id,"questions").then((value) {
+        await qb.updateDocument(
+            questionData.toJson(), questionData.id, "questions").then((value) {
           toast('Update Successfully');
           finish(context);
         }).catchError((e) {
@@ -267,7 +301,7 @@ setState(() {});
       } else {
         questionData.createdAt = DateTime.now();
 
-        qb.addDocument(questionData.toJson(),"questions").then((value) {
+        qb.addDocument(questionData.toJson(), "questions").then((value) {
           toast('Add Question Successfully');
 
           options.clear();
@@ -317,7 +351,7 @@ setState(() {});
               onPressed: () {
                 //if (getBoolAsync(IS_TEST_USER)) return toast(mTestUserMsg);
 
-                qb.removeDocument(widget.data!.id,"questions").then((value) {
+                qb.removeDocument(widget.data!.id, "questions").then((value) {
                   toast('Delete Successfully');
                   finish(context);
                   finish(context);
@@ -336,112 +370,122 @@ setState(() {});
   void setState(fn) {
     if (mounted) super.setState(fn);
   }
-  Future<void> uploadImg(String s) async{
-   try {
-      final QuestionsBloc qb = Provider.of<QuestionsBloc>(context, listen: false);
-     FilePickerResult? result;
+
+  Future<void> uploadImg(String s) async {
+    try {
+      final QuestionsBloc qb = Provider.of<QuestionsBloc>(
+          context, listen: false);
+      FilePickerResult? result;
       String pathString;
-     setState(() {
-       isReady = false;
-     });
-     result = await FilePicker.platform.pickFiles(
-       type: FileType.custom,
-         allowedExtensions: ["jpg","png"]
-     );
+      setState(() {
+        isReady = false;
+      });
+      result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ["jpg", "png"]
+      );
 
-     if(result != null){
-       Uint8List? uploadFile = result.files.single.bytes;
+      if (result != null) {
+        Uint8List? uploadFile = result.files.single.bytes;
 
-       Reference ref = FirebaseStorage.instance
-           .ref()
-           .child('questionImages')
-           .child(Uuid().v1());
+        Reference ref = FirebaseStorage.instance
+            .ref()
+            .child('questionImages')
+            .child(Uuid().v1());
 
-       UploadTask uploadTask = ref.putData(uploadFile!);
-       uploadTask.whenComplete(() async {
-         pathString = await uploadTask.snapshot.ref.getDownloadURL();
-         if (s.contains("Question Image")){
-           questionImgCont.text = pathString;
-           print("came here");
-           print(questionImgCont.text);
-           setState(() {
-             isReady = true;
-           });
-         }
-         else if (s.contains("A Image")){
-           option1ImgCont.text = pathString;
-           print("came here");
-           print(option1ImgCont.text);
-           setState(() {
-             isReady = true;
-           });
-         }
-         else if (s.contains("B Image")){
-           option2ImgCont.text = pathString;
-           print("came here");
-           print(option2ImgCont.text);
-           setState(() {
-             isReady = true;
-           });
-         }
-         else if (s.contains("C Image")){
-           option3ImgCont.text = pathString;
-           print("came here");
-           print(option3ImgCont.text);
-           setState(() {
-             isReady = true;
-           });
-         }       else if (s.contains("D Image")){
-           option4ImgCont.text = pathString;
-           print("came here");
-           print(option4ImgCont.text);
-           setState(() {
-             isReady = true;
-           });
-         }
-         else if (s.contains("Description")){
-           descriptionImgCont.text = pathString;
-           print("came here");
-           print(descriptionImgCont.text);
-           setState(() {
-             isReady = true;
-           });
-         }
-         else{
-           print("not question here");
-         }
-       });
-     }
-     else
-       {
-         setState(() {
-           isReady = true;
-         });
-       }
-
-
-
-
-    } catch (e){
-     print(e);
-     setState(() {
-       isReady = true;
-     });
-     openSnackbar(scaffoldKey, "Error $e");
-   }
+        UploadTask uploadTask = ref.putData(uploadFile!);
+        uploadTask.whenComplete(() async {
+          pathString = await uploadTask.snapshot.ref.getDownloadURL();
+          if (s.contains("Question Image")) {
+            questionImgCont.text = pathString;
+            print("came here");
+            print(questionImgCont.text);
+            setState(() {
+              isReady = true;
+            });
+          }
+          else if (s.contains("A Image")) {
+            option1ImgCont.text = pathString;
+            print("came here");
+            print(option1ImgCont.text);
+            setState(() {
+              isReady = true;
+            });
+          }
+          else if (s.contains("B Image")) {
+            option2ImgCont.text = pathString;
+            print("came here");
+            print(option2ImgCont.text);
+            setState(() {
+              isReady = true;
+            });
+          }
+          else if (s.contains("C Image")) {
+            option3ImgCont.text = pathString;
+            print("came here");
+            print(option3ImgCont.text);
+            setState(() {
+              isReady = true;
+            });
+          } else if (s.contains("D Image")) {
+            option4ImgCont.text = pathString;
+            print("came here");
+            print(option4ImgCont.text);
+            setState(() {
+              isReady = true;
+            });
+          }
+          else if (s.contains("Description")) {
+            descriptionImgCont.text = pathString;
+            print("came here");
+            print(descriptionImgCont.text);
+            setState(() {
+              isReady = true;
+            });
+          }
+          else {
+            print("not question here");
+          }
+        });
+      }
+      else {
+        setState(() {
+          isReady = true;
+        });
+      }
+    } catch (e) {
+      print(e);
+      setState(() {
+        isReady = true;
+      });
+      openSnackbar(scaffoldKey, "Error $e");
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     options.clear();
     if (questionType == constant.QuestionTypeOption) {
-      if (option1Cont.text.trim().isNotEmpty) options.add(option1Cont.text.trim());
-      if (option2Cont.text.trim().isNotEmpty) options.add(option2Cont.text.trim());
-      if (option3Cont.text.trim().isNotEmpty) options.add(option3Cont.text.trim());
-      if (option4Cont.text.trim().isNotEmpty) options.add(option4Cont.text.trim());
-     // if (descriptionCont.text.trim().isNotEmpty) options.add(de.text.trim());
+      if (option1Cont.text
+          .trim()
+          .isNotEmpty) options.add(option1Cont.text.trim());
+      if (option2Cont.text
+          .trim()
+          .isNotEmpty) options.add(option2Cont.text.trim());
+      if (option3Cont.text
+          .trim()
+          .isNotEmpty) options.add(option3Cont.text.trim());
+      if (option4Cont.text
+          .trim()
+          .isNotEmpty) options.add(option4Cont.text.trim());
+      // if (descriptionCont.text.trim().isNotEmpty) options.add(de.text.trim());
     } else {
-      if (option1Cont.text.trim().isNotEmpty) options.add(option1Cont.text.trim());
-      if (option2Cont.text.trim().isNotEmpty) options.add(option2Cont.text.trim());
+      if (option1Cont.text
+          .trim()
+          .isNotEmpty) options.add(option1Cont.text.trim());
+      if (option2Cont.text
+          .trim()
+          .isNotEmpty) options.add(option2Cont.text.trim());
     }
     final QuestionsBloc qb = Provider.of<QuestionsBloc>(context, listen: false);
     return Scaffold(
@@ -452,27 +496,31 @@ setState(() {});
         elevation: 0.0,
         leading: isUpdate
             ? IconButton(
-                icon: Icon(Icons.arrow_back, color: black),
-                onPressed: () {
-                  finish(context);
-                },
-              )
+          icon: Icon(Icons.arrow_back, color: black),
+          onPressed: () {
+            finish(context);
+          },
+        )
             : null,
         title: Row(
           children: [
             Text('Question for Quiz', style: boldTextStyle()),
             8.width,
-            Text(!isUpdate ? 'Create New Question' : 'Update Question', style: secondaryTextStyle()),
+            Text(!isUpdate ? 'Create New Question' : 'Update Question',
+                style: secondaryTextStyle()),
           ],
         ),
         actions: [
           isUpdate
-              ? IconButton(
-                  icon: Icon(Icons.delete_forever, color: black),
-                  onPressed: () {
-                    _showMyDialog();
-                  },
-                ).paddingOnly(right: 8)
+              ? Visibility(
+            visible: isOnlySuperAdmin ?? false,
+            child: IconButton(
+              icon: Icon(Icons.delete_forever, color: black),
+              onPressed: () {
+                _showMyDialog();
+              },
+            ).paddingOnly(right: 8),
+          )
               : SizedBox(),
         ],
       ),
@@ -486,16 +534,20 @@ setState(() {});
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Select Main Category', style: boldTextStyle(size: 18)),
+                    Text(
+                        'Select Main Category', style: boldTextStyle(size: 18)),
                     8.height,
                     Container(
                       width: context.width() * 0.45,
-                      decoration: BoxDecoration(borderRadius: radius(), color: Colors.grey.shade200),
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      decoration: BoxDecoration(
+                          borderRadius: radius(), color: Colors.grey.shade200),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 4),
                       child: DropdownButton(
                         underline: Offstage(),
                         items: categories.map((e) {
-                          return DropdownMenuItem(child: Text(e.name.validate()), value: e);
+                          return DropdownMenuItem(
+                              child: Text(e.name.validate()), value: e);
                         }).toList(),
                         isExpanded: true,
                         value: selectedCategory,
@@ -504,10 +556,11 @@ setState(() {});
 
                           /// Load sub categories
 
-                          subcategories = await qb.subCategoriesById(parentCategoryId: selectedCategory!.name!);
+                          subcategories = await qb.subCategoriesById(
+                              parentCategoryId: selectedCategory!.name!);
 
                           if (subcategories.isNotEmpty) {
-                              selectedSubCategory = subcategories.first;
+                            selectedSubCategory = subcategories.first;
                           }
                           setState(() {});
                         },
@@ -524,12 +577,15 @@ setState(() {});
                     8.height,
                     Container(
                       width: context.width() * 0.45,
-                      decoration: BoxDecoration(borderRadius: radius(), color: Colors.grey.shade200),
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      decoration: BoxDecoration(
+                          borderRadius: radius(), color: Colors.grey.shade200),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 4),
                       child: DropdownButton(
                         underline: Offstage(),
                         items: subcategories.map((e) {
-                          return DropdownMenuItem(child: Text(e.name.validate()), value: e);
+                          return DropdownMenuItem(
+                              child: Text(e.name.validate()), value: e);
                         }).toList(),
                         isExpanded: true,
                         value: selectedSubCategory,
@@ -564,14 +620,15 @@ setState(() {});
                 minLines: 1,
                 decoration: inputDecoration(labelText: 'Question Image'),
                 validator: (s) {
-                //  if (s!.trim().isEmpty) return constant.errorThisFieldRequired;
+                  //  if (s!.trim().isEmpty) return constant.errorThisFieldRequired;
                   return null;
                 },
               ),
               16.height,
               AppButton(
                 padding: EdgeInsets.all(16),
-                child: Text('Upload Question Image', style: primaryTextStyle(color: white)),
+                child: Text('Upload Question Image',
+                    style: primaryTextStyle(color: white)),
                 color: constant.bgColor,
                 onTap: () {
                   //save();
@@ -602,7 +659,8 @@ setState(() {});
                           setState(() {});
                         },
                         validator: (s) {
-                          if (s!.trim().isEmpty) return constant.errorThisFieldRequired;
+                          if (s!.trim().isEmpty)
+                            return constant.errorThisFieldRequired;
                           return null;
                         },
                       ).expand(),
@@ -627,7 +685,8 @@ setState(() {});
                           setState(() {});
                         },
                         validator: (s) {
-                          if (s!.trim().isEmpty) return constant.errorThisFieldRequired;
+                          if (s!.trim().isEmpty)
+                            return constant.errorThisFieldRequired;
                           return null;
                         },
                       ).expand(),
@@ -650,7 +709,8 @@ setState(() {});
                         ),
                         child: AppButton(
                           padding: EdgeInsets.all(16),
-                          child: Text('Upload A Image', style: primaryTextStyle(color: white)),
+                          child: Text('Upload A Image',
+                              style: primaryTextStyle(color: white)),
                           color: constant.bgColor,
                           onTap: () {
                             uploadImg("A Image");
@@ -674,7 +734,7 @@ setState(() {});
                           setState(() {});
                         },
                         validator: (s) {
-                         // if (s!.trim().isEmpty) return constant.errorThisFieldRequired;
+                          // if (s!.trim().isEmpty) return constant.errorThisFieldRequired;
                           return null;
                         },
                       ).expand(),
@@ -688,13 +748,14 @@ setState(() {});
                         height: 55,
                         width: 100,
                         decoration: BoxDecoration(
-                          border: Border.all(),
-                     borderRadius: BorderRadius.circular(5)
+                            border: Border.all(),
+                            borderRadius: BorderRadius.circular(5)
 
                         ),
                         child: AppButton(
                           padding: EdgeInsets.all(16),
-                          child: Text('Upload B Image', style: primaryTextStyle(color: white)),
+                          child: Text('Upload B Image',
+                              style: primaryTextStyle(color: white)),
                           color: constant.bgColor,
                           onTap: () {
                             uploadImg("B Image");
@@ -717,7 +778,7 @@ setState(() {});
                           setState(() {});
                         },
                         validator: (s) {
-                        //  if (s!.trim().isEmpty) return constant.errorThisFieldRequired;
+                          //  if (s!.trim().isEmpty) return constant.errorThisFieldRequired;
                           return null;
                         },
                       ).expand(),
@@ -746,7 +807,8 @@ setState(() {});
                           setState(() {});
                         },
                         validator: (s) {
-                          if (s!.trim().isEmpty) return constant.errorThisFieldRequired;
+                          if (s!.trim().isEmpty)
+                            return constant.errorThisFieldRequired;
                           return null;
                         },
                       ).expand(),
@@ -771,7 +833,8 @@ setState(() {});
                           setState(() {});
                         },
                         validator: (s) {
-                          if (s!.trim().isEmpty) return constant.errorThisFieldRequired;
+                          if (s!.trim().isEmpty)
+                            return constant.errorThisFieldRequired;
                           return null;
                         },
                       ).expand(),
@@ -795,7 +858,8 @@ setState(() {});
                         ),
                         child: AppButton(
                           padding: EdgeInsets.all(16),
-                          child: Text('Upload C Image', style: primaryTextStyle(color: white)),
+                          child: Text('Upload C Image',
+                              style: primaryTextStyle(color: white)),
                           color: constant.bgColor,
                           onTap: () {
                             uploadImg("C Image");
@@ -819,7 +883,7 @@ setState(() {});
                           setState(() {});
                         },
                         validator: (s) {
-                       //   if (s!.trim().isEmpty) return constant.errorThisFieldRequired;
+                          //   if (s!.trim().isEmpty) return constant.errorThisFieldRequired;
                           return null;
                         },
                       ).expand(),
@@ -839,7 +903,8 @@ setState(() {});
                         ),
                         child: AppButton(
                           padding: EdgeInsets.all(16),
-                          child: Text('Upload D Image', style: primaryTextStyle(color: white)),
+                          child: Text('Upload D Image',
+                              style: primaryTextStyle(color: white)),
                           color: constant.bgColor,
                           onTap: () {
                             uploadImg("D Image");
@@ -862,7 +927,7 @@ setState(() {});
                           setState(() {});
                         },
                         validator: (s) {
-                       //   if (s!.trim().isEmpty) return constant.errorThisFieldRequired;
+                          //   if (s!.trim().isEmpty) return constant.errorThisFieldRequired;
                           return null;
                         },
                       ).expand(),
@@ -914,7 +979,8 @@ setState(() {});
                         ),
                         child: AppButton(
                           padding: EdgeInsets.all(16),
-                          child: Text('Upload Description Img', style: primaryTextStyle(color: white)),
+                          child: Text('Upload Description Img',
+                              style: primaryTextStyle(color: white)),
                           color: constant.bgColor,
                           onTap: () {
                             uploadImg("Description");
@@ -929,7 +995,8 @@ setState(() {});
                         controller: descriptionImgCont,
                         textFieldType: TextFieldType.NAME,
                         textCapitalization: TextCapitalization.sentences,
-                        decoration: inputDecoration(labelText: "Description Image URL"),
+                        decoration: inputDecoration(
+                            labelText: "Description Image URL"),
                         keyboardType: TextInputType.url,
                         onChanged: (s) {
                           descriptionImgCont.text = s;
@@ -956,8 +1023,10 @@ setState(() {});
                       Text('Select Correct Answer', style: boldTextStyle()),
                       8.height,
                       Container(
-                        decoration: BoxDecoration(borderRadius: radius(), color: Colors.grey.shade200),
-                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                        decoration: BoxDecoration(borderRadius: radius(),
+                            color: Colors.grey.shade200),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 4),
                         child: DropdownButton<String>(
                           isExpanded: true,
                           underline: Offstage(),
@@ -1000,7 +1069,8 @@ setState(() {});
               16.height,
               AppButton(
                 padding: EdgeInsets.all(16),
-                child: Text(isUpdate ? 'Save' : 'Create Now', style: primaryTextStyle(color: white)),
+                child: Text(isUpdate ? 'Save' : 'Create Now',
+                    style: primaryTextStyle(color: white)),
                 color: constant.primaryColor,
                 onTap: () {
                   save();
@@ -1012,7 +1082,6 @@ setState(() {});
       ) : Center(child: CupertinoActivityIndicator(),),
     ).cornerRadiusWithClipRRect(16);
   }
-
 
 
 }

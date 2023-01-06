@@ -12,6 +12,9 @@ import 'package:admin/screens/user_questions/user_questions_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:provider/provider.dart';
+
+import '../../../blocs/sign_in_bloc.dart';
 
 class SideMenu extends StatefulWidget {
 
@@ -36,15 +39,24 @@ class _SideMenuState extends State<SideMenu> {
 
 
   Future<void> init() async {
+    final SignInBloc sb = Provider.of<SignInBloc>(context, listen: false);
+
+    sb.getDataFromSp().then((value)
+    {
+      if(sb.email.contains("adminuser@email.com") && sb.email.length == 19)
+      {
+        list.add(ListModel(name: 'Admins List', widget: UserListScreen(), imageAsset: 'assets/icons/menu_profile.svg'));
+        list.add(ListModel(name: 'Main Categories', widget: CategoryListScreen(), imageAsset: 'assets/icons/menu_task.svg'));
+        list.add(ListModel(name: 'Sub Categories', widget: SubCategoryListScreen(), imageAsset: 'assets/icons/menu_tran.svg'));
+        list.add(ListModel(name: 'Admins Actions', widget: UserQuestionsListScreen(), imageAsset: 'assets/icons/menu_profile.svg'));
+      }
+    });
+    
     list.add(ListModel(name: 'Dashboard', widget: DashboardScreen(), imageAsset: 'assets/icons/menu_dashbord.svg'));
-    list.add(ListModel(name: 'Admins List', widget: UserListScreen(), imageAsset: 'assets/icons/menu_profile.svg'));
-    list.add(ListModel(name: 'Main Categories', widget: CategoryListScreen(), imageAsset: 'assets/icons/menu_task.svg'));
-    list.add(ListModel(name: 'Sub Categories', widget: SubCategoryListScreen(), imageAsset: 'assets/icons/menu_tran.svg'));
     list.add(ListModel(name: 'Add Question', widget: AddNewQuestionsScreen(), imageAsset: 'assets/icons/menu_doc.svg'));
     list.add(ListModel(name: 'Questions', widget: AllQuestionsListWidget(), imageAsset: 'assets/icons/menu_store.svg'));
     list.add(ListModel(name: 'Create Quiz', widget: CreateQuizScreen(), imageAsset: 'assets/icons/menu_store.svg'));
     list.add(ListModel(name: 'Category Quiz List', widget: QuizListScreen(), imageAsset: 'assets/icons/menu_task.svg'));
-    list.add(ListModel(name: 'Admins Actions', widget: UserQuestionsListScreen(), imageAsset: 'assets/icons/menu_profile.svg'));
     LiveStream().on('selectItem', (index) {
       this.index = index as int;
 
