@@ -45,7 +45,7 @@ class UsersBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<MyUser>> getUserList(String? id) async {
+  Future<List<MyUser>> getUserList() async {
     CollectionReference ref = FirebaseFirestore.instance.collection('admins');
 
      await ref.get().then((querySnapshot) {
