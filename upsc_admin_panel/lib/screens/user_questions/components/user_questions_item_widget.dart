@@ -83,7 +83,7 @@ class _UserQuestionsItemWidgetState extends State<UserQuestionsItemWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final QuestionsBloc qb = Provider.of<QuestionsBloc>(context, listen: false);
+
     return Container(
       padding: EdgeInsets.all(8),
       child: Row(

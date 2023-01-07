@@ -1,3 +1,4 @@
+import 'package:admin/blocs/questions_bloc.dart';
 import 'package:admin/blocs/users_bloc.dart';
 import 'package:admin/constants.dart';
 import 'package:admin/models/my_user.dart';
@@ -26,6 +27,7 @@ class UserQuestionsListScreen extends StatefulWidget {
 class _UserQuestionsListScreenState extends State<UserQuestionsListScreen> {
   DateTime? _firstDate;
   DateTime? _lastDate;
+  List<MyUser> adminList = [];
 
   bool isLoading = false;
 
@@ -129,14 +131,13 @@ class _UserQuestionsListScreenState extends State<UserQuestionsListScreen> {
     super.initState();
     _lastDate = DateTime.now();
     _firstDate = DateTime.now().subtract(Duration(days: 1));
+    getAdminList();
 
   }
 
   @override
   Widget build(BuildContext context) {
     final UsersBloc ub = Provider.of<UsersBloc>(context, listen: false);
-    DateTime  now = DateTime.now();
-    DateTime  yesterday = DateTime.now().subtract(Duration(hours: 24));
     return Scaffold(
       appBar: appBarWidget('User Questions', showBack: false, elevation: 0.0),
       body: SingleChildScrollView(
@@ -253,6 +254,46 @@ class _UserQuestionsListScreenState extends State<UserQuestionsListScreen> {
 
                       print("finished");
                     }),
+
+                //Report
+                TextButton.icon(
+                    style: ButtonStyle(
+                      padding: MaterialStateProperty.resolveWith(
+                              (states) =>
+                              EdgeInsets.all(20)),
+                      backgroundColor:
+                      MaterialStateProperty.resolveWith((states) =>
+                      secondaryColor),
+                      shape: MaterialStateProperty.resolveWith(
+                              (states) => RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(3))),
+                    ),
+                    icon: Icon(Feather.file_text,
+                        color: Colors.white, size: 20),
+                    label: Text(
+                        'Report',
+                        style: TextStyle(color: Colors.white)),
+                    onPressed: () {
+                      print("Bul ye basıldı");
+                      final QuestionsBloc qb = Provider.of<QuestionsBloc>(context, listen: false);
+
+
+                        for(int i=0;i<adminList.length;i++)
+                          {
+                            print( " ----- " + adminList[i].Email.toString() + " ----- ");
+                              qb.listQuestionByUserFuture(adminList[i],_firstDate!,_lastDate!)?.then((questions) {
+/// TO DO: CSV ÇIKTI REPORT BURADAN ALINCAK VERİ ZATEN ALINIYOR BURDA SADECE ÇIKTIYA BAĞLANACAK
+                                print(questions.length.toString() + " bu kadar soru yapmış");
+
+
+                        });
+                          }
+
+
+
+
+                      print("finished");
+                    }),
               ],
             ),
           isLoading ? Center(child: CupertinoActivityIndicator(),) : PaginateFirestore(
@@ -281,5 +322,13 @@ class _UserQuestionsListScreenState extends State<UserQuestionsListScreen> {
         ),
       ),
     ).cornerRadiusWithClipRRect(16);
+  }
+
+  void getAdminList() async{
+
+    final UsersBloc ub = Provider.of<UsersBloc>(context, listen: false);
+    ub.getUserList().then((value) {
+      adminList = value;
+    });
   }
 }
