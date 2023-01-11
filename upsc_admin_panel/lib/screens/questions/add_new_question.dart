@@ -161,7 +161,7 @@ class AddQuestionsScreenState extends State<AddNewQuestionsScreen> {
     addedBy = sb.email;
 
     sb.getDataFromSp().then((value) {
-      if (sb.email.contains("adminuser@email.com") && sb.email.length == 19) {
+      if (sb.email.contains("operations@conqueststaffingsystems.com")) {
         isOnlySuperAdmin = true;
       }
     });

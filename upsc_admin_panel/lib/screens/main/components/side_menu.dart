@@ -43,7 +43,7 @@ class _SideMenuState extends State<SideMenu> {
 
     sb.getDataFromSp().then((value)
     {
-      if(sb.email.contains("adminuser@email.com") && sb.email.length == 19)
+      if(sb.email.contains("operations@conqueststaffingsystems.com"))
       {
         list.add(ListModel(name: 'Admins List', widget: UserListScreen(), imageAsset: 'assets/icons/menu_profile.svg'));
         list.add(ListModel(name: 'Main Categories', widget: CategoryListScreen(), imageAsset: 'assets/icons/menu_task.svg'));

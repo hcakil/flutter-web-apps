@@ -89,7 +89,7 @@ class SignInBloc extends ChangeNotifier {
               _email = currentUser!.email!;
               _password = userPassword;
               _isSignedIn = true;
-              if(currentUser!.uid.contains("7O1Cyk7KS2M5x3ebC66f4zkcZGM2"))
+              if(currentUser!.uid.contains("rYztq8sPFYZm6ixxxtDr16AkHG83"))
                 {_isRole = "SuperAdmin";}
               else {
                 _isRole = "User";
