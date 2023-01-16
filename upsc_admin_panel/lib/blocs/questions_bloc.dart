@@ -9,6 +9,7 @@ import 'package:admin/models/main_category.dart';
 import 'package:admin/models/my_user.dart';
 import 'package:admin/models/question_model.dart';
 import 'package:admin/models/quiz_model.dart';
+import 'package:admin/models/source_list.dart';
 import 'package:admin/models/sub_category.dart';
 import 'package:admin/utils/model_keys.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -110,6 +111,15 @@ class QuestionsBloc extends ChangeNotifier {
       throw e;
     });
   }
+  Future<void> updateSourceListItemDocument(Map<String, dynamic> data, String? id) async {
+    CollectionReference ref = FirebaseFirestore.instance.collection('sourceList');
+    await ref.doc(id).update(data).then((value) {
+      log('Updated: $data');
+    }).catchError((e) {
+      log(e);
+      throw e;
+    });
+  }
 
   Future<DocumentReference> addCategoryDocument(Map data) async {
     CollectionReference ref = FirebaseFirestore.instance.collection('mainCategories');
@@ -137,9 +147,41 @@ class QuestionsBloc extends ChangeNotifier {
       throw e;
     });
   }
+  Future<DocumentReference> addSourceListItemDocument(Map data) async {
+    CollectionReference ref = FirebaseFirestore.instance.collection('sourceList');
+    return await ref.add(data).then((value) {
+      value.update({CommonKeys.id: value.id});
+
+      log('Added: $data');
+
+      return value;
+    }).catchError((e) {
+      log(e);
+      throw e;
+    });
+  }
 
   Future<void> removeCategoryDocument(String? id) async {
     CollectionReference ref = FirebaseFirestore.instance.collection('mainCategories');
+    await ref.doc(id).delete().then((value) {
+      log('Removed: $id');
+    }).catchError((e) {
+      log(e);
+      throw e;
+    });
+  }
+  Future<void> removeSourceListItemDocument(String? id) async {
+    CollectionReference ref = FirebaseFirestore.instance.collection('sourceList');
+    await ref.doc(id).delete().then((value) {
+      log('Removed: $id');
+    }).catchError((e) {
+      log(e);
+      throw e;
+    });
+  }
+
+  Future<void> removeSubCategoryDocument(String? id) async {
+    CollectionReference ref = FirebaseFirestore.instance.collection('subCategories');
     await ref.doc(id).delete().then((value) {
       log('Removed: $id');
     }).catchError((e) {
@@ -157,6 +199,11 @@ class QuestionsBloc extends ChangeNotifier {
   Stream<List<SubCategoryModel>> subCategories() {
     CollectionReference ref = FirebaseFirestore.instance.collection('subCategories');
     return ref.snapshots().map((x) => x.docs.map((y) => SubCategoryModel.fromJson(y.data() as Map<String, dynamic>)).toList());
+  }
+
+  Stream<List<SourceListModel>> sourceList() {
+    CollectionReference ref = FirebaseFirestore.instance.collection('sourceList');
+    return ref.snapshots().map((x) => x.docs.map((y) => SourceListModel.fromJson(y.data() as Map<String, dynamic>)).toList());
   }
   Future<List<SubCategoryModel>> subCategoriesById({String parentCategoryId = ''}) async {
     CollectionReference ref = FirebaseFirestore.instance.collection('subCategories');
