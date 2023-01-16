@@ -262,6 +262,10 @@ class QuestionsBloc extends ChangeNotifier {
     CollectionReference ref = FirebaseFirestore.instance.collection('mainCategories');
     return await ref.get().then((x) => x.docs.map((y) => MainCategoryModel.fromJson(y.data() as Map<String, dynamic>)).toList());
   }
+  Future<List<SourceListModel>> sourceListFuture({String parentCategoryId = ''}) async {
+    CollectionReference ref = FirebaseFirestore.instance.collection('sourceList');
+    return await ref.get().then((x) => x.docs.map((y) => SourceListModel.fromJson(y.data() as Map<String, dynamic>)).toList());
+  }
 
   Future<List<QuizModel>> get quizListCategory async {
     CollectionReference ref = FirebaseFirestore.instance.collection('categoryQuiz');

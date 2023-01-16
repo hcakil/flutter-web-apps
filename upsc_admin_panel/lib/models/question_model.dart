@@ -7,6 +7,7 @@ class QuestionModel {
   String? question;
   String? questionImage;
   String? source;
+  String? sourceListItem;
   String? topic;
   String? userName;
   String? optionImage1;
@@ -35,6 +36,7 @@ class QuestionModel {
       this.question,
       this.questionImage,
       this.source,
+      this.sourceListItem,
       this.topic,
       this.category,
       this.userName,
@@ -62,6 +64,7 @@ class QuestionModel {
       question: json[QuestionKeys.question],
       questionImage: json[QuestionKeys.questionImage],
       source: json[QuestionKeys.source],
+      sourceListItem: json[QuestionKeys.sourceListItem],
       topic: json[QuestionKeys.topic],
       userName: json[QuestionKeys.userName],
       optionImage1: json[QuestionKeys.optionImage1],
@@ -110,6 +113,7 @@ class QuestionModel {
     data[QuestionKeys.userName] = this.userName ?? "";
     data[QuestionKeys.topic] = this.topic;
     data[QuestionKeys.source] = this.source;
+    data[QuestionKeys.sourceListItem] = this.sourceListItem;
     data[CommonKeys.createdAt] = this.createdAt;
     data[CommonKeys.updatedAt] = this.updatedAt;
 

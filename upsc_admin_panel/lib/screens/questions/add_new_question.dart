@@ -5,6 +5,7 @@ import 'package:admin/blocs/sign_in_bloc.dart';
 import 'package:admin/constants.dart' as constant;
 import 'package:admin/models/main_category.dart';
 import 'package:admin/models/question_model.dart';
+import 'package:admin/models/source_list.dart';
 import 'package:admin/models/sub_category.dart';
 import 'package:admin/utils/common.dart';
 import 'package:admin/utils/snackbar.dart';
@@ -61,9 +62,11 @@ class AddQuestionsScreenState extends State<AddNewQuestionsScreen> {
 
   int? questionTypeGroupValue = 1;
   MainCategoryModel? selectedCategory;
+  SourceListModel? selectedSourceListItem;
   SubCategoryModel? selectedSubCategory;
 
   List<MainCategoryModel> categories = [];
+  List<SourceListModel> sourceList = [];
   List<SubCategoryModel> subcategories = [];
 
   bool isUpdate = false;
@@ -170,6 +173,21 @@ class AddQuestionsScreenState extends State<AddNewQuestionsScreen> {
     /// Load main categories
     final QuestionsBloc qb = Provider.of<QuestionsBloc>(context, listen: false);
     categories = await qb.mainCategoriesFuture();
+    sourceList = await qb.sourceListFuture();
+
+    if (sourceList.isNotEmpty) {
+      if (isUpdate) {
+        try {
+          selectedSourceListItem =
+              sourceList.firstWhere((element) => element.name ==
+                  widget.data!.sourceListItem);
+        } catch (e) {
+          print(e);
+        }
+      } else {
+        selectedSourceListItem = sourceList.first;
+      }
+    }
 
     if (categories.isNotEmpty) {
       if (isUpdate) {
@@ -215,6 +233,9 @@ class AddQuestionsScreenState extends State<AddNewQuestionsScreen> {
     }
     if (selectedCategory == null) {
       return toast('Please Select Main Category');
+    }
+    if (selectedSourceListItem == null) {
+      return toast('Please Select Source List Item');
     }
     if (selectedSubCategory == null) {
       return toast('Please Select Sub Category');
@@ -281,6 +302,10 @@ class AddQuestionsScreenState extends State<AddNewQuestionsScreen> {
       if (selectedCategory != null) {
         questionData.category = selectedCategory!
             .name; //categoryService.ref!.doc(selectedCategory!.id);
+      }
+      if (selectedSourceListItem != null) {
+        questionData.sourceListItem = selectedSourceListItem!
+            .name;
       }
       if (selectedSubCategory != null) {
         questionData.topic = selectedSubCategory!.name;
@@ -1051,7 +1076,7 @@ class AddQuestionsScreenState extends State<AddNewQuestionsScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Add Source ', style: boldTextStyle()),
+                      Text('Add Source Details ', style: boldTextStyle()),
                       8.height,
                       AppTextField(
                         controller: sourceCont,
@@ -1059,11 +1084,45 @@ class AddQuestionsScreenState extends State<AddNewQuestionsScreen> {
                         textCapitalization: TextCapitalization.sentences,
                         maxLines: 3,
                         minLines: 1,
-                        decoration: inputDecoration(labelText: 'Source'),
+                        decoration: inputDecoration(labelText: 'Source Details'),
                         isValidationRequired: false,
                       ),
                     ],
                   ).expand(),
+                ],
+              ),
+              Row(
+                children: [
+                  if (sourceList.isNotEmpty)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            'Select Source List Item', style: boldTextStyle(size: 18)),
+                        8.height,
+                        Container(
+                          width: context.width() * 0.45,
+                          decoration: BoxDecoration(
+                              borderRadius: radius(), color: Colors.grey.shade200),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 4),
+                          child: DropdownButton(
+                            underline: Offstage(),
+                            items: sourceList.map((e) {
+                              return DropdownMenuItem(
+                                  child: Text(e.name.validate()), value: e);
+                            }).toList(),
+                            isExpanded: true,
+                            value: selectedSourceListItem,
+                            onChanged: (dynamic c) async {
+                              selectedSourceListItem = c;
+
+                              setState(() {});
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                 ],
               ),
               16.height,
