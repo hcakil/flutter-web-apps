@@ -361,12 +361,12 @@ class _UserQuestionsListScreenState extends State<UserQuestionsListScreen> {
     final List<String> listColumnQuestionDate = [];
 
     adminQuestionList.forEach((element) {
-      listColumnEmail.add(element.addedBy!);
-      listColumnQuestionId.add(element.id!);
-      listColumnQuestionCategory.add(element.category!);
-      listColumnQuestionSubCategory.add(element.topic!);
-      listColumnQuestionSource.add(element.source!);
-      listColumnQuestionDate.add(element.createdAt!.toIso8601String());
+      listColumnEmail.add(element.addedBy ?? "addedBy-null");
+      listColumnQuestionId.add(element.id ?? "id-null");
+      listColumnQuestionCategory.add(element.category ?? "category-null");
+      listColumnQuestionSubCategory.add(element.topic ?? "topic null");
+      listColumnQuestionSource.add(element.source ?? "source-null");
+      listColumnQuestionDate.add((element.createdAt ?? DateTime.now()).toIso8601String());
 
     });
 
