@@ -60,13 +60,13 @@ class QuestionsBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<QuestionModel> questionById(String? id) async {
+  Future<QuestionModel?> questionById(String? id) async {
     CollectionReference ref = FirebaseFirestore.instance.collection('questions');
     return await ref.where('id', isEqualTo: id).limit(1).get().then((x) {
       if (x.docs.isNotEmpty) {
         return QuestionModel.fromJson(x.docs.first.data() as Map<String, dynamic>);
       } else {
-        throw 'Not available';
+        return null;
       }
     });
   }

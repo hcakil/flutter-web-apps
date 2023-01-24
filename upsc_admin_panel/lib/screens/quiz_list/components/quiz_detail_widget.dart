@@ -31,7 +31,7 @@ class QuizDetailWidgetState extends State<QuizDetailWidget> {
     final QuestionsBloc qb = Provider.of<QuestionsBloc>(context, listen: false);
     widget.data!.questionRef!.forEach((e) async {
       await qb.questionById(e).then((value) {
-        quizQuestionsList.add(value);
+        quizQuestionsList.add(value!);
         setState(() {});
       }).catchError((e) {
         throw e.toString();

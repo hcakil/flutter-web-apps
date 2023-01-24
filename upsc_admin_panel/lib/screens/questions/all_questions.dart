@@ -5,7 +5,9 @@ import 'package:admin/models/question_model.dart';
 import 'package:admin/models/sub_category.dart';
 import 'package:admin/screens/questions/add_new_question.dart';
 import 'package:admin/utils/app_widgets.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:admin/utils/common.dart';
+import 'package:admin/constants.dart' as constant;
+import 'package:admin/utils/snackbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -29,14 +31,22 @@ class AllQuestionsListWidgetState extends State<AllQuestionsListWidget> {
   SubCategoryModel? selectedSubCategory;
   bool isLoading = false;
   bool isUpdate = false;
+  bool isFound = false;
   late MainCategoryModel selectedCategory;
+  List<String> optionList = [];
+
+  late QuestionModel data;
 
   ScrollController controller = ScrollController();
+
+  TextEditingController questionIdCont = TextEditingController();
+
+  var _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    init();
+  //  init();
   }
 
   Future<void> init() async {
@@ -105,6 +115,7 @@ class AllQuestionsListWidgetState extends State<AllQuestionsListWidget> {
   Widget build(BuildContext context) {
     final QuestionsBloc qb = Provider.of<QuestionsBloc>(context, listen: false);
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         elevation: 0.0,
         backgroundColor: Colors.transparent,
@@ -112,11 +123,11 @@ class AllQuestionsListWidgetState extends State<AllQuestionsListWidget> {
           height: 150,
           child: Row(
             children: [
-              Text('All Questions', style: boldTextStyle()),
+              Text('Enter Question Id', style: boldTextStyle()),
               16.width,
               Row(
                 children: [
-                  if (categories.isNotEmpty)
+                 /* if (categories.isNotEmpty)
                     Container(
                       padding: EdgeInsets.only(left: 8, right: 8),
                       decoration: BoxDecoration(borderRadius: radius(), color: Colors.grey.shade200),
@@ -185,26 +196,70 @@ class AllQuestionsListWidgetState extends State<AllQuestionsListWidget> {
                           ),
                         ),
                       ],
+                    ),*/
+                  Container(
+                    width: 300,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top:8.0),
+                      child: AppTextField(
+                        controller: questionIdCont,
+                        textFieldType: TextFieldType.NAME,
+                        textCapitalization: TextCapitalization.sentences,
+                        maxLines: 1,
+                        minLines: 1,
+                        decoration: inputDecoration(labelText: 'Question Id'),
+                        validator: (s) {
+                          if (s!.trim().isEmpty) return constant.errorThisFieldRequired;
+                          return null;
+                        },
+                      ),
                     ),
+                  ),
                   16.width,
                   AppButton(
                     padding: EdgeInsets.all(16),
                     color: primaryColor,
                     child: Text('Search', style: primaryTextStyle(color: white)),
-                    onTap: () {
-                      print(selectedCategoryForFilter!.name);
-                      print(selectedSubCategory!.name);
-                     // selectedCategoryForFilter = categoriesFilter.first;
-                     // selectedSubCategory = subcategories.first;
-                      // selectedQuestionList.clear();
-                      if (selectedCategoryForFilter!.id == null) {
-                        loadQuestion();
-                      } else if(selectedSubCategory!.id == null) {
-                        loadQuestion();
-                      }
+                    onTap: () async {
+
+                      if(questionIdCont.text.trim().validate().length>0 )
+                        {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          await qb.questionById(questionIdCont.text).then((value) {
+                            if(value != null)
+                            {
+                              data = value;
+                              optionList = [];
+                              optionList.add(data.option1!);
+                              optionList.add(data.option2!);
+                              optionList.add(data.option3!);
+                              optionList.add(data.option4!);
+                              setState(() {
+                                isFound = true;
+                                isLoading = false;
+                              });
+                            }
+                            else
+                            {
+                              setState(() {
+                                isFound = false;
+                                isLoading = false;
+                              });
+                            }
+
+                          }).catchError((e) {
+                            throw e.toString();
+                          });
+                        }
                       else {
-                        loadQuestion(categoryRef: selectedSubCategory!.name);
+                        openSnackbar(_scaffoldKey, "Something went wrong");
                       }
+
+
+
+
                     },
                   ),
                 ],
@@ -213,7 +268,91 @@ class AllQuestionsListWidgetState extends State<AllQuestionsListWidget> {
           ),
         ),
       ),
-      body: isLoading ? Center(child: CupertinoActivityIndicator(),): Scrollbar(
+      body: isLoading ? Center(child: CupertinoActivityIndicator(),):
+      !isFound ? Center(child: Container(child: Text("Nothing Found, Please enter valid Question Id"),))
+          : Container(
+        decoration: BoxDecoration(boxShadow: defaultBoxShadow(), color: Colors.white, borderRadius: radius()),
+        margin: EdgeInsets.only(bottom: 16, top: 16, right: 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(16),
+                  margin: EdgeInsets.only(top: 8, bottom: 8),
+                  decoration: boxDecorationWithRoundedCorners(border: Border.all(color: gray.withOpacity(0.4), width: 0.1)),
+                  child: Text('1. ${data.question}', style: boldTextStyle(color: secondaryColor, size: 18)),
+                ).expand(),
+                16.width,
+                IconButton(
+                  icon: Icon(Icons.edit, color: black),
+                  onPressed: () {
+
+                    AddNewQuestionsScreen(data: data).launch(context);
+                  },
+                )
+              ],
+            ),
+            16.height,
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Wrap(
+                direction: Axis.horizontal,
+                children: optionList.map(
+                      (e) {
+                    return Container(
+                      padding: EdgeInsets.all(8),
+                      margin: EdgeInsets.only(right: 16),
+                      //  width: 100,
+                      alignment: Alignment.center,
+                      decoration: boxDecorationWithRoundedCorners(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: gray.withOpacity(0.4), width: 0.1),
+                      ),
+                      child: Text(e, style: secondaryTextStyle(color: black)),
+                    );
+                  },
+                ).toList(),
+              ),
+            ),
+            16.height,
+            Row(
+              children: [
+                SelectableText('Question Id : ' +data.id!, style: boldTextStyle(size: 18)),
+                8.width,
+                Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.all(8),
+                  decoration: boxDecorationWithRoundedCorners(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: gray.withOpacity(0.4), width: 0.1),
+                  ),
+                  child: Text("", style: boldTextStyle()),
+                ),
+              ],
+            ),
+            16.height,
+            Row(
+              children: [
+                Text('Correct Answer :', style: boldTextStyle(size: 18)),
+                8.width,
+                Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.all(8),
+                  decoration: boxDecorationWithRoundedCorners(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: gray.withOpacity(0.4), width: 0.1),
+                  ),
+                  child: Text(data.answer!, style: boldTextStyle()),
+                ),
+              ],
+            )
+          ],
+        ).paddingSymmetric(horizontal: 16, vertical: 16),
+      ),
+   /* Scrollbar(
         thickness: 5.0,
         controller: controller,
         radius: Radius.circular(16),
@@ -320,7 +459,7 @@ class AllQuestionsListWidgetState extends State<AllQuestionsListWidget> {
           onEmpty: noDataWidget(),
           onError: (e) => Text(e.toString(), style: primaryTextStyle()).center(),
         ),
-      ),
+      ),*/
     ).cornerRadiusWithClipRRect(16);
   }
 }

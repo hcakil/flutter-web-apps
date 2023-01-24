@@ -12,11 +12,14 @@ import 'package:provider/provider.dart';
 class AdminStatisticsWidget extends StatefulWidget {
   static String tag = '/AdminStatisticsWidget';
 
+
   @override
   _AdminStatisticsWidgetState createState() => _AdminStatisticsWidgetState();
 }
 
 class _AdminStatisticsWidgetState extends State<AdminStatisticsWidget> {
+
+  bool isAdmin = false;
   @override
   void initState() {
     super.initState();
@@ -36,6 +39,15 @@ class _AdminStatisticsWidgetState extends State<AdminStatisticsWidget> {
   Widget build(BuildContext context) {
     final QuestionsBloc qb = Provider.of<QuestionsBloc>(context, listen: false);
     final UsersBloc ub = Provider.of<UsersBloc>(context, listen: false);
+
+    ub.getDataFromSp().then((value)
+    {
+      if(ub.email!.contains("operations@conqueststaffingsystems.com"))
+      {
+        isAdmin = true;
+       }
+    });
+
     Widget itemWidget(Color bgColor, Color textColor, String title, String desc, IconData icon, {Function? onTap}) {
       return Container(
         width: 280,
@@ -93,7 +105,7 @@ class _AdminStatisticsWidgetState extends State<AdminStatisticsWidget> {
                   }
                 },
               ),*/
-              StreamBuilder<List<QuestionModel>>(
+              isAdmin ? StreamBuilder<List<QuestionModel>>(
                 stream: qb.listQuestion(),
                 builder: (_, snap) {
                   if (snap.hasData) {
@@ -111,7 +123,7 @@ class _AdminStatisticsWidgetState extends State<AdminStatisticsWidget> {
                     return SizedBox();
                   }
                 },
-              ),
+              ) : SizedBox(height: 10,width: 10,),
               StreamBuilder<List<MyUser>>(
                 stream: ub.users(),
                 builder: (_, snap) {
