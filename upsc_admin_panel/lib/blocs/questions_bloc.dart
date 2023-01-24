@@ -70,6 +70,32 @@ class QuestionsBloc extends ChangeNotifier {
       }
     });
   }
+  Future<int?> getLatestQuestionNumberForId() async {
+    CollectionReference ref = FirebaseFirestore.instance.collection('questionIdCount');
+    return await ref.get().then((x) {
+      if (x.docs.isNotEmpty) {
+        var data = x.docs.first.data() as Map<String, dynamic>;
+        print(data.toString());
+        return data["latestNumber"] ?? 9;
+      } else {
+        print("null geldi");
+        return null;
+      }
+    });
+  }
+  Future<bool?> increaseLatestQuestionNumberForId(int latestNumber) async {
+    CollectionReference ref = FirebaseFirestore.instance.collection('questionIdCount');
+    Map<String,dynamic> data = {
+        "latestNumber" : latestNumber
+    };
+    await ref.doc("questionIdCount").update(data).then((value) {
+      log('Updated: $data');
+      return true;
+    }).catchError((e) {
+      log(e);
+      return false;
+    });
+  }
   Stream<List<QuestionModel>> listQuestion() {
     CollectionReference ref = FirebaseFirestore.instance.collection('questions');
     return ref.snapshots().map((x) => x.docs.map((y) => QuestionModel.fromJson(y.data() as Map<String, dynamic>)).toList());
@@ -286,11 +312,24 @@ class QuestionsBloc extends ChangeNotifier {
   Future<DocumentReference> addDocument(Map data,  String? refCame) async {
     CollectionReference ref = FirebaseFirestore.instance.collection('$refCame');
     return await ref.add(data).then((value) {
-      value.update({CommonKeys.id: value.id});
+      //value.update({CommonKeys.id: value.id});
 
       log('Added: $data');
 
       return value;
+    }).catchError((e) {
+      log(e);
+      throw e;
+    });
+  }
+  Future<void> addQuestionDocument(Map data,  String? refCame) async {
+    CollectionReference ref = FirebaseFirestore.instance.collection(refCame!);
+    return await ref.doc(data[CommonKeys.id]).set(data).then((_) {
+      //value.update({CommonKeys.id: value.id});
+
+      log('Added: $data');
+
+
     }).catchError((e) {
       log(e);
       throw e;

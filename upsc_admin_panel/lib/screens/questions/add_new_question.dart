@@ -324,32 +324,52 @@ class AddQuestionsScreenState extends State<AddNewQuestionsScreen> {
           toast(e.toString());
         });
       } else {
-        questionData.createdAt = DateTime.now();
+        //get latestQuestionNumber for Id
+        var dataInt;
+        qb.getLatestQuestionNumberForId().then((value) {
+          dataInt = value ?? 0;
+          dataInt +=1;
+          var data = "QA-" + dataInt.toString();
+          print(data);
+          questionData.createdAt = DateTime.now();
+          questionData.id = data;
 
-        qb.addDocument(questionData.toJson(), "questions").then((value) {
-          toast('Add Question Successfully');
+          qb.addQuestionDocument(questionData.toJson(), "questions").then((_) {
+            toast('Add Question Successfully $data',length: Toast.LENGTH_LONG);
 
-          options.clear();
-          optionsImages.clear();
+            options.clear();
+            optionsImages.clear();
 
-          option1Cont.clear();
-          option2Cont.clear();
-          option3Cont.clear();
-          option4Cont.clear();
-          option1ImgCont.clear();
-          option2ImgCont.clear();
-          option3ImgCont.clear();
-          option4ImgCont.clear();
-          sourceCont.clear();
-          questionCont.clear();
-          questionImgCont.clear();
-          descriptionCont.clear();
-          descriptionImgCont.clear();
+            option1Cont.clear();
+            option2Cont.clear();
+            option3Cont.clear();
+            option4Cont.clear();
+            option1ImgCont.clear();
+            option2ImgCont.clear();
+            option3ImgCont.clear();
+            option4ImgCont.clear();
+            sourceCont.clear();
+            questionCont.clear();
+            questionImgCont.clear();
+            descriptionCont.clear();
+            descriptionImgCont.clear();
+            qb.increaseLatestQuestionNumberForId(dataInt).then((value){
+              if(true)
+              {
+                print("all ok");
+                setState(() {});
 
-          setState(() {});
-        }).catchError((e) {
-          log(e);
+              }
+            });
+
+
+          }).catchError((e) {
+            log(e);
+          });
+
         });
+
+
       }
     }
   }
