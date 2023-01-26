@@ -297,7 +297,7 @@ class _UserQuestionsListScreenState extends State<UserQuestionsListScreen> {
                         });
                           }
 
-                        Future.delayed(Duration(seconds: 2)).then((value) {
+                        Future.delayed(Duration(seconds: 10)).then((value) {
                           _createExcel();
                         });
 
